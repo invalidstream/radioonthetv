@@ -14,6 +14,11 @@
 		01628F5C1C8D0AD1000D3728 /* RadioOnTheTVTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01628F5B1C8D0AD1000D3728 /* RadioOnTheTVTests.swift */; };
 		01628F671C8D0AD1000D3728 /* RadioOnTheTVUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01628F661C8D0AD1000D3728 /* RadioOnTheTVUITests.swift */; };
 		01628F751C8D0B19000D3728 /* WebRadioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01628F741C8D0B19000D3728 /* WebRadioPlayer.swift */; };
+		018147E21C962D7100773374 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018147E11C962D7100773374 /* DetailViewController.swift */; };
+		018147E41C962D8A00773374 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018147E31C962D8A00773374 /* MasterViewController.swift */; };
+		018147E61C962DBB00773374 /* station-list.plist in Resources */ = {isa = PBXBuildFile; fileRef = 018147E51C962DBB00773374 /* station-list.plist */; };
+		018147E81C9631E100773374 /* StationCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018147E71C9631E100773374 /* StationCellTableViewCell.swift */; };
+		018147EB1C9635D400773374 /* StationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018147EA1C9635D400773374 /* StationInfo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +52,11 @@
 		01628F661C8D0AD1000D3728 /* RadioOnTheTVUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioOnTheTVUITests.swift; sourceTree = "<group>"; };
 		01628F681C8D0AD1000D3728 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		01628F741C8D0B19000D3728 /* WebRadioPlayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebRadioPlayer.swift; sourceTree = "<group>"; };
+		018147E11C962D7100773374 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		018147E31C962D8A00773374 /* MasterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterViewController.swift; sourceTree = "<group>"; };
+		018147E51C962DBB00773374 /* station-list.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "station-list.plist"; sourceTree = "<group>"; };
+		018147E71C9631E100773374 /* StationCellTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationCellTableViewCell.swift; sourceTree = "<group>"; };
+		018147EA1C9635D400773374 /* StationInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,12 +107,15 @@
 		01628F481C8D0AD1000D3728 /* RadioOnTheTV */ = {
 			isa = PBXGroup;
 			children = (
+				018147E91C9635C400773374 /* Common */,
+				018147DC1C962CF100773374 /* Master */,
+				018147DD1C962D0C00773374 /* Detail */,
+				018147DE1C962D0F00773374 /* Player */,
 				01628F491C8D0AD1000D3728 /* AppDelegate.swift */,
 				01628F4B1C8D0AD1000D3728 /* ViewController.swift */,
 				01628F4D1C8D0AD1000D3728 /* Main.storyboard */,
 				01628F501C8D0AD1000D3728 /* Assets.xcassets */,
 				01628F521C8D0AD1000D3728 /* Info.plist */,
-				01628F741C8D0B19000D3728 /* WebRadioPlayer.swift */,
 			);
 			path = RadioOnTheTV;
 			sourceTree = "<group>";
@@ -123,6 +136,40 @@
 				01628F681C8D0AD1000D3728 /* Info.plist */,
 			);
 			path = RadioOnTheTVUITests;
+			sourceTree = "<group>";
+		};
+		018147DC1C962CF100773374 /* Master */ = {
+			isa = PBXGroup;
+			children = (
+				018147E31C962D8A00773374 /* MasterViewController.swift */,
+				018147E71C9631E100773374 /* StationCellTableViewCell.swift */,
+				018147E51C962DBB00773374 /* station-list.plist */,
+			);
+			name = Master;
+			sourceTree = "<group>";
+		};
+		018147DD1C962D0C00773374 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				018147E11C962D7100773374 /* DetailViewController.swift */,
+			);
+			name = Detail;
+			sourceTree = "<group>";
+		};
+		018147DE1C962D0F00773374 /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				01628F741C8D0B19000D3728 /* WebRadioPlayer.swift */,
+			);
+			name = Player;
+			sourceTree = "<group>";
+		};
+		018147E91C9635C400773374 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				018147EA1C9635D400773374 /* StationInfo.swift */,
+			);
+			name = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -230,6 +277,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01628F511C8D0AD1000D3728 /* Assets.xcassets in Resources */,
+				018147E61C962DBB00773374 /* station-list.plist in Resources */,
 				01628F4F1C8D0AD1000D3728 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -255,8 +303,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				018147E41C962D8A00773374 /* MasterViewController.swift in Sources */,
 				01628F4C1C8D0AD1000D3728 /* ViewController.swift in Sources */,
+				018147E21C962D7100773374 /* DetailViewController.swift in Sources */,
+				018147EB1C9635D400773374 /* StationInfo.swift in Sources */,
 				01628F4A1C8D0AD1000D3728 /* AppDelegate.swift in Sources */,
+				018147E81C9631E100773374 /* StationCellTableViewCell.swift in Sources */,
 				01628F751C8D0B19000D3728 /* WebRadioPlayer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -476,6 +528,7 @@
 				01628F6D1C8D0AD1000D3728 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		01628F6E1C8D0AD1000D3728 /* Build configuration list for PBXNativeTarget "RadioOnTheTVTests" */ = {
 			isa = XCConfigurationList;
@@ -484,6 +537,7 @@
 				01628F701C8D0AD1000D3728 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		01628F711C8D0AD1000D3728 /* Build configuration list for PBXNativeTarget "RadioOnTheTVUITests" */ = {
 			isa = XCConfigurationList;
@@ -492,6 +546,7 @@
 				01628F731C8D0AD1000D3728 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

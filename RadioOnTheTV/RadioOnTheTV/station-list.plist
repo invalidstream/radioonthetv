@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>name</key>
+		<string>Armitage&apos;s Dimension (AAC)</string>
+		<key>streamurl</key>
+		<string>http://armitunes.com:8010/</string>
+	</dict>
+	<dict>
+		<key>name</key>
+		<string>Extreme Anime Radio (AAC)</string>
+		<key>streamurl</key>
+		<string>http://174.123.20.140:8010/</string>
+	</dict>
+	<dict>
+		<key>name</key>
+		<string>CBC Radio 3 (MP3)</string>
+		<key>streamurl</key>
+		<string>http://8673.live.streamtheworld.com:443/CBC_R3_WEB_SC</string>
+	</dict>
+	<dict>
+		<key>name</key>
+		<string>KZSU-1 Stanford, 128Kbps (MP3)</string>
+		<key>streamurl</key>
+		<string>http://171.66.118.51:80/kzsu-1-128.mp3</string>
+	</dict>
+	<dict>
+		<key>name</key>
+		<string>KZSU-1 Stanford, 192Kbps (AAC)</string>
+		<key>streamurl</key>
+		<string>http://171.66.118.51:80/kzsu-1-192.aac</string>
+	</dict>
+</array>
+</plist>
