@@ -59,6 +59,8 @@ class MasterViewController: UIViewController, UITableViewDataSource, UITableView
             if let detailVC = splitViewController.viewControllers[1] as? DetailViewController {
             detailVC.station = stations[indexPath.row]
             }
+            guard let stationsSplitViewController = splitViewController as? StationsSplitViewController else { return }
+            stationsSplitViewController.updateFocusToDetailViewController()
         }
     }
 }

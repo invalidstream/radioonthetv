@@ -185,10 +185,10 @@
             </objects>
             <point key="canvasLocation" x="2747" y="399"/>
         </scene>
-        <!--Split View Controller-->
+        <!--Stations Split View Controller-->
         <scene sceneID="lJW-jP-BNA">
             <objects>
-                <splitViewController id="wrg-mV-3pR" sceneMemberID="viewController">
+                <splitViewController id="wrg-mV-3pR" customClass="StationsSplitViewController" customModule="RadioOnTheTV" customModuleProvider="target" sceneMemberID="viewController">
                     <connections>
                         <segue destination="2Yt-Jl-GhG" kind="relationship" relationship="masterViewController" id="bAj-gk-p0q"/>
                         <segue destination="ISA-9K-PRY" kind="relationship" relationship="detailViewController" id="yU6-5B-Xm7"/>

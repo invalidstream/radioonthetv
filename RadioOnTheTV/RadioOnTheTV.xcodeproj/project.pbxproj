@@ -19,6 +19,7 @@
 		018147E61C962DBB00773374 /* station-list.plist in Resources */ = {isa = PBXBuildFile; fileRef = 018147E51C962DBB00773374 /* station-list.plist */; };
 		018147E81C9631E100773374 /* StationCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018147E71C9631E100773374 /* StationCellTableViewCell.swift */; };
 		018147EB1C9635D400773374 /* StationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018147EA1C9635D400773374 /* StationInfo.swift */; };
+		01A6CE501C9F629500D8507B /* StationsSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A6CE4F1C9F629500D8507B /* StationsSplitViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		018147E51C962DBB00773374 /* station-list.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "station-list.plist"; sourceTree = "<group>"; };
 		018147E71C9631E100773374 /* StationCellTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationCellTableViewCell.swift; sourceTree = "<group>"; };
 		018147EA1C9635D400773374 /* StationInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationInfo.swift; sourceTree = "<group>"; };
+		01A6CE4F1C9F629500D8507B /* StationsSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationsSplitViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +109,7 @@
 		01628F481C8D0AD1000D3728 /* RadioOnTheTV */ = {
 			isa = PBXGroup;
 			children = (
+				01A6CE4E1C9F627700D8507B /* Split */,
 				018147E91C9635C400773374 /* Common */,
 				018147DC1C962CF100773374 /* Master */,
 				018147DD1C962D0C00773374 /* Detail */,
@@ -170,6 +173,14 @@
 				018147EA1C9635D400773374 /* StationInfo.swift */,
 			);
 			name = Common;
+			sourceTree = "<group>";
+		};
+		01A6CE4E1C9F627700D8507B /* Split */ = {
+			isa = PBXGroup;
+			children = (
+				01A6CE4F1C9F629500D8507B /* StationsSplitViewController.swift */,
+			);
+			name = Split;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -307,6 +318,7 @@
 				01628F4C1C8D0AD1000D3728 /* ViewController.swift in Sources */,
 				018147E21C962D7100773374 /* DetailViewController.swift in Sources */,
 				018147EB1C9635D400773374 /* StationInfo.swift in Sources */,
+				01A6CE501C9F629500D8507B /* StationsSplitViewController.swift in Sources */,
 				01628F4A1C8D0AD1000D3728 /* AppDelegate.swift in Sources */,
 				018147E81C9631E100773374 /* StationCellTableViewCell.swift in Sources */,
 				01628F751C8D0B19000D3728 /* WebRadioPlayer.swift in Sources */,
