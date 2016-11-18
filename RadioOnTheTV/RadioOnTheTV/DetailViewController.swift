@@ -14,7 +14,7 @@ class DetailViewController: UIViewController, WebRadioPlayerDelegate {
     @IBOutlet weak var addressLabel: UILabel!
     @IBOutlet weak var playPauseButton: UIButton!
 
-    private var player : WebRadioPlayer?
+    fileprivate var player : WebRadioPlayer?
 
     var station : StationInfo? {
         didSet {
@@ -25,62 +25,62 @@ class DetailViewController: UIViewController, WebRadioPlayerDelegate {
                 player?.delegate = self
                 stationNameLabel.text = station.name
                 addressLabel.text = station.streamURL.description
-                playPauseButton.enabled = true
+                playPauseButton.isEnabled = true
             } else {
-                playPauseButton.enabled = false
+                playPauseButton.isEnabled = false
             }
         }
     }
 
     override weak var preferredFocusedView: UIView? {
-        return playPauseButton.enabled ? playPauseButton : nil
+        return playPauseButton.isEnabled ? playPauseButton : nil
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        playPauseButton.enabled = false
+        playPauseButton.isEnabled = false
         // Do any additional setup after loading the view.
     }
 
-    func webRadioPlayerStateChanged(player: WebRadioPlayer) {
+    func webRadioPlayerStateChanged(_ player: WebRadioPlayer) {
         NSLog ("state change: \(player.playerInfo.state)")
         updateButton()
     }
     
-    private func updateButton() {
-        let controlStates : [UIControlState] = [.Normal, .Selected, .Focused, .Highlighted, .Disabled]
+    fileprivate func updateButton() {
+        let controlStates : [UIControlState] = [.selected, .focused, .highlighted, .disabled]
         switch player?.playerInfo.state {
-        case .None:
-            playPauseButton.enabled = false
-        case .Some(.Initialized), .Some(.Paused):
-            playPauseButton.enabled = true
+        case .none:
+            playPauseButton.isEnabled = false
+        case .some(.initialized), .some(.paused):
+            playPauseButton.isEnabled = true
             setTitleForButton(playPauseButton, text: "Play", forControlStates: controlStates)
-        case .Some(.Starting):
-            playPauseButton.enabled = false
+        case .some(.starting):
+            playPauseButton.isEnabled = false
             setTitleForButton(playPauseButton, text: "Starting", forControlStates: controlStates)
-        case .Some(.Playing):
-            playPauseButton.enabled = true
+        case .some(.playing):
+            playPauseButton.isEnabled = true
             setTitleForButton(playPauseButton, text: "Pause", forControlStates: controlStates)
-        case .Some(.Error):
-            playPauseButton.enabled = false
+        case .some(.error):
+            playPauseButton.isEnabled = false
             setTitleForButton(playPauseButton, text: "Error", forControlStates: controlStates)
         }
         updateFocusIfNeeded()
     }
     
-    private func setTitleForButton(button: UIButton, text: String, forControlStates controlStates: [UIControlState]) {
+    fileprivate func setTitleForButton(_ button: UIButton, text: String, forControlStates controlStates: [UIControlState]) {
         for controlState in controlStates {
-            button.setTitle(text, forState: controlState)
+            button.setTitle(text, for: controlState)
         }
     }
     
-    @IBAction func playPauseTriggered(sender: AnyObject) {
+    @IBAction func playPauseTriggered(_ sender: AnyObject) {
         switch player?.playerInfo.state {
-        case .Some(.Initialized):
+        case .some(.initialized):
             player?.start()
-        case .Some(.Paused):
+        case .some(.paused):
             player?.resume()
-        case .Some(.Playing):
+        case .some(.playing):
             player?.pause()
         default:
             break

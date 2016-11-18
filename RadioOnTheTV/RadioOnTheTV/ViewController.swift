@@ -30,7 +30,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        if let url = NSURL (string: "http://armitunes.com:8010/") {
+        if let url = URL (string: "http://armitunes.com:8010/") {
             addressLabel.text = url.description
             webRadioPlayer = WebRadioPlayer(stationURL: url)
             webRadioPlayer?.start()

@@ -10,5 +10,5 @@ import Foundation
 
 struct StationInfo {
     let name : String
-    let streamURL : NSURL
+    let streamURL : URL
 }

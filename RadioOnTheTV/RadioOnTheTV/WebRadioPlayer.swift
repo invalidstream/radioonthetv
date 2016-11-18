@@ -10,21 +10,21 @@ import Foundation
 import AudioToolbox
 
 enum PlayerState {
-    case Initialized
-    case Starting
-    case Playing
-    case Paused
-    case Error // todo: maybe an associated value with OSStatus?
+    case initialized
+    case starting
+    case playing
+    case paused
+    case error // todo: maybe an associated value with OSStatus?
 }
 
 extension PlayerState : CustomStringConvertible {
     var description : String {
         switch self {
-        case .Initialized: return "Initialized"
-        case .Starting: return "Starting"
-        case .Playing: return "Playing"
-        case .Paused: return "Paused"
-        case .Error: return "Error"
+        case .initialized: return "Initialized"
+        case .starting: return "Starting"
+        case .playing: return "Playing"
+        case .paused: return "Paused"
+        case .error: return "Error"
         }
     }
     
@@ -32,7 +32,7 @@ extension PlayerState : CustomStringConvertible {
 
 // this two-delegate stuff is really bad; maybe KVO on the state property would be better here
 protocol PlayerInfoDelegate : class {
-    func stateChangedForPlayerInfo(playerInfo: PlayerInfo)
+    func stateChangedForPlayerInfo(_ playerInfo: PlayerInfo)
 }
 
 class PlayerInfo {
@@ -41,7 +41,7 @@ class PlayerInfo {
     var totalPacketsReceived : UInt32 = 0
     var queueStarted : Bool = false
     weak var delegate : PlayerInfoDelegate?
-    var state : PlayerState = .Initialized {
+    var state : PlayerState = .initialized {
         didSet {
             if state != oldValue {
                 delegate?.stateChangedForPlayerInfo(self)
@@ -57,51 +57,53 @@ AAC: application/octet-stream
 */
 
 protocol WebRadioPlayerDelegate {
-    func webRadioPlayerStateChanged(player : WebRadioPlayer)
+    func webRadioPlayerStateChanged(_ player : WebRadioPlayer)
 }
 
-class WebRadioPlayer : NSObject, NSURLSessionDataDelegate, PlayerInfoDelegate {
+class WebRadioPlayer : NSObject, URLSessionDataDelegate, PlayerInfoDelegate {
     
-    private (set) var error : NSError?
+    fileprivate (set) var error : NSError?
     
     // TODO: figure out something nice with OSStatus
     // (to replace CheckError)
     
-    private let stationURL : NSURL
+    fileprivate let stationURL : URL
 
-    private var dataTask : NSURLSessionDataTask?
+    fileprivate var dataTask : URLSessionDataTask?
     
     // must be var of a class to do C-style pointer stuff
     var playerInfo : PlayerInfo
     
-    var fileStream : AudioFileStreamID = AudioFileStreamID()
+    var fileStream : AudioFileStreamID? = nil
 
     var delegate : WebRadioPlayerDelegate?
     
     var parseIsDiscontinuous = true
     
-    init(stationURL : NSURL) {
+    init(stationURL : URL) {
         self.stationURL = stationURL
         playerInfo = PlayerInfo()
         super.init()
         playerInfo.delegate = self
-        playerInfo.state = .Initialized
+        playerInfo.state = .initialized
     }
     
     func start() {
-        playerInfo.state = .Starting
-        let urlSession = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(), delegate: self, delegateQueue: nil)
-        let dataTask = urlSession.dataTaskWithURL(stationURL)
+        playerInfo.state = .starting
+        let urlSession = Foundation.URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
+        let dataTask = urlSession.dataTask(with: stationURL)
         self.dataTask = dataTask
         dataTask.resume()
     }
 
     func pause() {
         dataTask?.suspend()
-        playerInfo.state = .Paused
+        playerInfo.state = .paused
         if let audioQueue = playerInfo.audioQueue {
-            var err = noErr
-            err = AudioQueueStop(audioQueue, true)
+            let err = AudioQueueStop(audioQueue, true)
+            if err != noErr {
+                print("error happens when stop audio queue")
+            }
         }
         parseIsDiscontinuous = true
     }
@@ -111,28 +113,27 @@ class WebRadioPlayer : NSObject, NSURLSessionDataDelegate, PlayerInfoDelegate {
         dataTask?.resume()
     }
     
-    func stateChangedForPlayerInfo(playerInfo:PlayerInfo) {
+    func stateChangedForPlayerInfo(_ playerInfo:PlayerInfo) {
         delegate?.webRadioPlayerStateChanged(self)
     }
     
     // MARK: - NSURLSessionDataDelegate
-    func URLSession(session: NSURLSession,
-        dataTask: NSURLSessionDataTask,
-        didReceiveResponse response: NSURLResponse,
-        completionHandler: (NSURLSessionResponseDisposition) -> Void) {
+    func urlSession(_ session: URLSession,
+        dataTask: URLSessionDataTask,
+        didReceive response: URLResponse,
+        completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
 
-            NSLog ("dataTask didReceiveResponse: \(response), MIME type \(response.MIMEType)")
+            NSLog ("dataTask didReceiveResponse: \(response), MIME type \(response.mimeType)")
             
-            guard let httpResponse = response as? NSHTTPURLResponse
-                where httpResponse.statusCode == 200 else {
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
                     NSLog ("failed with response \(response)")
-                    completionHandler(.Cancel)
+                    completionHandler(.cancel)
                     return
             }
             
             
             let streamTypeHint : AudioFileTypeID
-            if let mimeType = response.MIMEType {
+            if let mimeType = response.mimeType {
                 streamTypeHint = streamTypeHintForMIMEType(mimeType)
             } else {
                 streamTypeHint = 0
@@ -146,33 +147,33 @@ class WebRadioPlayer : NSObject, NSURLSessionDataDelegate, PlayerInfoDelegate {
                 &fileStream)
             NSLog ("created file stream, err = \(err)")
             
-            completionHandler(.Allow)
+            completionHandler(.allow)
     }
     
-    func URLSession(session: NSURLSession,
-        dataTask: NSURLSessionDataTask,
-        didReceiveData data: NSData) {
-            NSLog ("dataTask didReceiveData, \(data.length) bytes")
+    func urlSession(_ session: URLSession,
+        dataTask: URLSessionDataTask,
+        didReceive data: Data) {
+            NSLog ("dataTask didReceiveData, \(data.count) bytes")
             
             var err = noErr
             let parseFlags : AudioFileStreamParseFlags
             if parseIsDiscontinuous {
-                parseFlags = .Discontinuity
+                parseFlags = .discontinuity
                 parseIsDiscontinuous = false
             } else {
                 parseFlags = AudioFileStreamParseFlags()
             }
-            err = AudioFileStreamParseBytes(fileStream,
-                UInt32(data.length),
-                data.bytes,
+            err = AudioFileStreamParseBytes(fileStream!,
+                UInt32(data.count),
+                (data as NSData).bytes,
                 parseFlags)
             
-            NSLog ("wrote \(data.length) bytes to AudioFileStream, err = \(err)")
+            NSLog ("wrote \(data.count) bytes to AudioFileStream, err = \(err)")
     }
     
 
     // MARK: - util
-    private func streamTypeHintForMIMEType(mimeType : String) -> AudioFileTypeID {
+    fileprivate func streamTypeHintForMIMEType(_ mimeType : String) -> AudioFileTypeID {
         switch mimeType {
         case "audio/mpeg":
             return kAudioFileMP3Type
@@ -188,19 +189,21 @@ class WebRadioPlayer : NSObject, NSURLSessionDataDelegate, PlayerInfoDelegate {
 // MARK: - AudioFileStream procs
 // TODO: can these be private?
 let streamPropertyListenerProc : AudioFileStream_PropertyListenerProc = {
-    (inClientData : UnsafeMutablePointer<Void>,
+    (inClientData : UnsafeMutableRawPointer,
     inAudioFileStreamID : AudioFileStreamID,
     inAudioFileStreamPropertyID : AudioFileStreamPropertyID,
     ioFlags : UnsafeMutablePointer<AudioFileStreamPropertyFlags>) -> Void in
     
-    let playerInfo = UnsafeMutablePointer<PlayerInfo>(inClientData).memory
+//    let playerInfo = UnsafeMutablePointer<PlayerInfo>(inClientData).pointee
+    let playerInfo = inClientData.assumingMemoryBound(to: PlayerInfo.self).pointee
+    
     var err = noErr
     NSLog ("streamPropertyListenerProc, prop id \(inAudioFileStreamPropertyID)")
     
     switch inAudioFileStreamPropertyID {
     case kAudioFileStreamProperty_DataFormat:
         var dataFormat = AudioStreamBasicDescription()
-        var propertySize = UInt32(sizeof(AudioStreamBasicDescription))
+        var propertySize = UInt32(MemoryLayout<AudioStreamBasicDescription>.size)
         err = AudioFileStreamGetProperty(inAudioFileStreamID, inAudioFileStreamPropertyID,
             &propertySize, &dataFormat)
         NSLog ("got data format, err is \(err) \(dataFormat)")
@@ -210,7 +213,7 @@ let streamPropertyListenerProc : AudioFileStream_PropertyListenerProc = {
         NSLog ("got magic cookie")
     case kAudioFileStreamProperty_ReadyToProducePackets:
         NSLog ("got ready to produce packets")
-        var audioQueue = AudioQueueRef()
+        var audioQueue: AudioQueueRef? = nil
         var dataFormat = playerInfo.dataFormat!
         err = AudioQueueNewOutput(&dataFormat,
             queueCallbackProc,
@@ -229,28 +232,28 @@ let streamPropertyListenerProc : AudioFileStream_PropertyListenerProc = {
 }
 
 let streamPacketsProc : AudioFileStream_PacketsProc = {
-    (inClientData : UnsafeMutablePointer<Void>,
+    (inClientData : UnsafeMutableRawPointer,
     inNumberBytes : UInt32,
     inNumberPackets : UInt32,
-    inInputData : UnsafePointer<Void>,
+    inInputData : UnsafeRawPointer,
     inPacketDescriptions : UnsafeMutablePointer<AudioStreamPacketDescription>) -> Void in
     
     var err = noErr
     NSLog ("streamPacketsProc got \(inNumberPackets) packets")
-    let playerInfo = UnsafeMutablePointer<PlayerInfo>(inClientData).memory
-    
-    var buffer = AudioQueueBufferRef()
+//    let playerInfo = UnsafeMutablePointer<PlayerInfo>(inClientData).pointee
+    let playerInfo = inClientData.assumingMemoryBound(to: PlayerInfo.self).pointee
+    var buffer: AudioQueueBufferRef? = nil
     if let audioQueue = playerInfo.audioQueue {
         err = AudioQueueAllocateBuffer(audioQueue,
             inNumberBytes,
             &buffer)
         NSLog ("allocated buffer, err is \(err) buffer is \(buffer)")
-        buffer.memory.mAudioDataByteSize = inNumberBytes
-        memcpy(buffer.memory.mAudioData, inInputData, Int(inNumberBytes))
+        buffer?.pointee.mAudioDataByteSize = inNumberBytes
+        memcpy(buffer?.pointee.mAudioData, inInputData, Int(inNumberBytes))
         NSLog ("copied data, not dead yet")
         
         err = AudioQueueEnqueueBuffer(audioQueue,
-            buffer,
+            buffer!,
             inNumberPackets,
             inPacketDescriptions)
         NSLog ("enqueued buffer, err is \(err)")
@@ -260,18 +263,14 @@ let streamPacketsProc : AudioFileStream_PacketsProc = {
             err = AudioQueueStart (audioQueue,
                 nil)
             NSLog ("started playing, err is \(err)")
-            playerInfo.state = .Playing
+            playerInfo.state = .playing
         }
     }
 }
 
 // MARK: - AudioQueue callback
-let queueCallbackProc : AudioQueueOutputCallback = {
-    (inUserData : UnsafeMutablePointer<Void>,
-    inAudioQueue : AudioQueueRef,
-    inQueueBuffer : AudioQueueBufferRef) -> Void in
+let queueCallbackProc : AudioQueueOutputCallback = { (inUserData, inAudioQueue, inQueueBuffer) in
     NSLog ("queueCallbackProc")
-    let playerInfo = UnsafeMutablePointer<PlayerInfo>(inUserData).memory
     var err = noErr
     err = AudioQueueFreeBuffer (inAudioQueue, inQueueBuffer)
     NSLog ("freed a buffer, err is \(err)")
